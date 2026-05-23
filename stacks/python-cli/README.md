@@ -114,9 +114,6 @@ stacks/python-cli/
 │   └── setup/
 │       └── action.yml                # Shared CI setup action
 ├── copier.yml                         # Copier config (questions, derived vars, tasks)
-├── actions/
-│   └── setup/
-│       └── action.yml                # Shared CI setup action
 ├── template/
 │   ├── {{ _copier_conf.answers_file }}.jinja  # Copier answers (auto-generated)
 │   ├── .github/

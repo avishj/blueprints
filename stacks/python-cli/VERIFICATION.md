@@ -188,7 +188,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] Install commands use app name (uv, pip, docker)
 - [ ] Usage examples updated for actual commands (demo `hello` command replaced)
 - [ ] Development section: clone URL, `cd` dir use correct repo name
-- [ ] Common tasks table matches template (`just lint`, `just test`, `just build`, `just docs`, `just ci`, `just clean`)
+- [ ] Common tasks list matches template (`just install`, `just lint`, `just test`, `just build`, `just docs`, `just ci`, `just clean`)
 - [ ] Configuration section: env var prefix and table use `<APP>_` (not `MYAPP_`), rows updated for actual settings
 - [ ] Documentation link points to correct GitHub Pages URL
 - [ ] License section matches `pyproject.toml` license choice
@@ -223,7 +223,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 **`REUSE.toml`:**
 
 - [ ] `version = 1` present
-- [ ] Covers only uncommentable files: `*.json`, `*.lock`, `src/myapp/py.typed` (replace `myapp` with your actual package name)
+- [ ] Covers only uncommentable files: `*.json`, `*.lock`, `.copier-answers.yml`, `AGENTS.md`, `src/myapp/py.typed` (replace `myapp` with your actual package name)
 - [ ] `SPDX-FileCopyrightText` entries use actual copyright holder (not `Avish J <avish.j@pm.me>`)
 - [ ] `SPDX-License-Identifier` entries match the project license (AGPL-3.0-or-later unless changed)
 - [ ] `LICENSES/**` annotation present with FSF copyright
@@ -347,14 +347,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 - [ ] `module` uses app name (not `myapp`)
 - [ ] `env` uses correct `<APP>_VERBOSE` prefix (not `MYAPP_VERBOSE`)
-- [ ] `args` updated for actual CLI commands (demo `["hello", "world"]` replaced)
+- [ ] `args` defaults to `--help` (update for real commands if desired)
 
 **`.devcontainer/Dockerfile` (copy 1:1 from template):**
 
 - [ ] `FROM ghcr.io/astral-sh/uv:...` pinned with `@sha256:` digest
 - [ ] `FROM mcr.microsoft.com/devcontainers/python:3.13` pinned with `@sha256:` digest
 - [ ] `COPY --from=uv /uv /uvx /usr/local/bin/`
-- [ ] `uv tool install rust-just==1.51.0` installs just
+- [ ] `uv tool install rust-just` installs just
 
 **`.devcontainer/devcontainer.json`:**
 
@@ -367,7 +367,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Copy 1:1 from template (no changes needed):**
 
-- [ ] `justfile` — all 6 recipes: `lint`, `test`, `build`, `docs`, `ci`, `clean`
+- [ ] `justfile` — recipes include `install`, `lint`, `test`, `build`, `docs`, `ci`, `clean`
 - [ ] `.pre-commit-config.yaml` — all 10 repos: pre-commit-hooks, ruff, ty (local), yamllint, validate-pyproject, complexipy, commitizen, typos, reuse, gitleaks
 - [ ] `.editorconfig` — indent/charset/line-ending rules for `*`, `*.yml/yaml`, `*.json`, `*.md`, `*.toml`, `*.properties`, `Dockerfile`, `justfile`, `LICENSE`, `LICENSES/**`
 - [ ] `.gitattributes` — line-ending normalization, diff drivers, linguist overrides
@@ -390,6 +390,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Environment setup:**
 
+- [ ] `just install` — runs `uv sync --frozen` and installs git hooks
 - [ ] `uv sync` — venv created, all deps installed
 - [ ] `uv lock` — `uv.lock` generated
 - [ ] `uvx --with pre-commit-uv==4.2.1 pre-commit@4.6.0 install --install-hooks` — pre-commit and commit-msg hooks active and hook environments are prebuilt
@@ -411,7 +412,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "Avish J\|avish.j@pm.me" .` — zero hits if author is different; expected hits if author is Avish J
 - [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "Change This\|change-this" .` — zero hits (settings.yml placeholders replaced)
 - [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "A CLI application" .` — zero hits (template description replaced)
-- [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml '\${' .` — zero hits (all `${...}` placeholders like `SONAR_PROJECT_KEY`, `SONAR_ORG`, `PROJECT_NAME` resolved)
+- [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "{{" .` — zero hits (no Jinja placeholders remain)
 - [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "avishj" . | grep -v "avishj/blueprints"` — zero hits if owner is different; hits referencing `avishj/blueprints` (centralized actions) are expected and excluded by this command
 - [ ] `.copier-answers.yml` exists in project root and contains expected answer values
 
@@ -437,7 +438,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Add secrets** (Settings > Secrets and variables > Actions > New repository secret):
 
-- [ ] `CODECOV_TOKEN` — get from [codecov.io](https://codecov.io) after adding the repo
 - [ ] `DOCKERHUB_USERNAME` — Docker Hub username (only if publishing to Docker Hub)
 - [ ] `DOCKERHUB_TOKEN` — Docker Hub access token (only if publishing to Docker Hub)
 
