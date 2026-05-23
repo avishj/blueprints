@@ -256,6 +256,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 - [ ] All 12 jobs present: `changes`, `checks`, `docker`, `test`, `sonarcloud`, `package`, `complexity`, `security`, `codeql`, `osv-scanner`, `dependency-review`, `ci-passed`
 - [ ] `changes` job and `ci-passed` gate job are present, and `ci.yml` otherwise matches the template including remote setup action usage and current job gating
+- [ ] `sonarcloud` job uses `environment: sonarcloud`
 - [ ] `docker` job — `docker build -t` and `docker run --rm` image name uses app name (not `myapp`)
 - [ ] `package` job — `uv run --with dist/*.whl --no-project --` entry-point verification uses app name (not `myapp`)
 - [ ] All remaining `ci.yml` jobs and behavior match the template exactly
@@ -437,12 +438,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 **Add secrets** (Settings > Secrets and variables > Actions > New repository secret):
 
 - [ ] `CODECOV_TOKEN` — get from [codecov.io](https://codecov.io) after adding the repo
-- [ ] `SONAR_TOKEN` — get from [sonarcloud.io](https://sonarcloud.io) after creating the project
 - [ ] `DOCKERHUB_USERNAME` — Docker Hub username (only if publishing to Docker Hub)
 - [ ] `DOCKERHUB_TOKEN` — Docker Hub access token (only if publishing to Docker Hub)
 
 **Create environment** (Settings > Environments > New environment):
 
+- [ ] Create environment named `sonarcloud` and add `SONAR_TOKEN` as an environment secret
 - [ ] Create environment named `pypi`
 - [ ] In the `pypi` environment, configure [trusted publisher](https://docs.pypi.org/trusted-publishers/) on PyPI: set repository owner, repo name, workflow `release.yml`, and environment `pypi`
 

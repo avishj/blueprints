@@ -100,7 +100,8 @@ These items are intentionally not templated by Copier (hardcoded defaults). Chan
 
 - [ ] Create GitHub repo (public, default branch `main`)
 - [ ] Enable GitHub Pages (source: GitHub Actions) for docs
-- [ ] Add repo secret: `SONAR_TOKEN`
+- [ ] Create GitHub environment: `sonarcloud` and add `SONAR_TOKEN` as an environment secret
+- [ ] Add repo secret: `CODECOV_TOKEN` (required for private repos)
 - [ ] Add repo secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`
 - [ ] Create GitHub environment: `pypi` (with trusted publisher configured)
 - [ ] Enable secret scanning with push protection
