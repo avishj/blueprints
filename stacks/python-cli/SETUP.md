@@ -25,7 +25,7 @@ uvx copier@9.15.1 copy /tmp/blueprints/stacks/python-cli my-project --trust
 rm -rf /tmp/blueprints
 ```
 
-> **Note:** `--trust` is required because the template runs post-scaffold tasks (`uv sync` and `pre-commit install --install-hooks`). Review the tasks in `copier.yml` before running if concerned.
+> **Note:** `--trust` is required because the template runs post-scaffold tasks (`uv sync` and `uvx --with pre-commit-uv==4.2.1 pre-commit@4.6.0 install --install-hooks`). Review the tasks in `copier.yml` before running if concerned.
 >
 > **Why clone first?** Copier discovers its config at the root of the path you give it. Since `copier.yml` lives at `stacks/python-cli/copier.yml` (not the repo root), remote URLs like `gh:avishj/blueprints` won't work directly. Cloning first and pointing to the subdirectory is the supported approach for multi-stack repos.
 
