@@ -5,7 +5,7 @@
 ---
 repository:
   name: blueprints
-  description: Production-ready project templates powered by Copier
+  description: A maximalist, opinionated meta repository serving as a personal engineering standard for various tech stacks via copier templates that handle engineering decisions, tooling, project structure, quality, CI/CD and more.
   homepage: https://github.com/avishj/blueprints
   topics: copier, templates, blueprints, python, astro, react
 
