@@ -68,6 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] Imports `__version__` from `myapp`, `settings` from `myapp.config`, `ExitCode` from `myapp.exit_codes`, `setup_logging` from `myapp.logging` (replace `myapp`)
 - [ ] Module-level `logger = logging.getLogger(__name__)` defined
 - [ ] `App()` created with `name=`, `help=`, `version=__version__`, `version_flags=["--version", "-V"]`
+- [ ] `app.register_install_completion_command()` called to enable completion install command
 - [ ] `console = Console()` instantiated
 - [ ] `@app.meta.default` function exists — wires `--verbose` flag to `settings.verbose`, calls `setup_logging()`, and calls `app(tokens)`
 - [ ] `entrypoint()` function exists — calls `app.meta()` (this is the `console_scripts` target)
@@ -78,12 +79,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **`config.py`:**
 
-- [ ] `LogFormat` enum defined with `PRETTY` and `JSON` values
+- [ ] `LogFormat` defined as `StrEnum` with `PRETTY` and `JSON` values
 - [ ] `Settings` class extends `BaseSettings` with `SettingsConfigDict`
 - [ ] `env_prefix` set to `<APP>_` (uppercase app name + underscore, not `MYAPP_`)
 - [ ] `env_file` and `env_file_encoding` settings present
 - [ ] `verbose: bool = False` field exists (used by CLI `--verbose` flag)
 - [ ] `log_format: LogFormat = LogFormat.PRETTY` field exists (set via `<APP>_LOG_FORMAT` env var)
+- [ ] Validation errors render a Rich panel and exit with `ExitCode.CONFIG`
 - [ ] Module-level `settings = Settings()` instance exported
 
 **`exit_codes.py`:**
@@ -95,7 +97,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 - [ ] `_JSONFormatter` class defined — formats log records as JSON with `timestamp`, `level`, `logger`, `message` fields
 - [ ] `setup_logging()` function defined with `verbose` and `log_format` params
-- [ ] Pretty mode attaches `RichHandler` with `rich_tracebacks=True`
+- [ ] `setup_logging()` installs rich tracebacks (`show_locals=verbose`) and suppresses cyclopts frames
+- [ ] Pretty mode attaches `RichHandler` with `rich_tracebacks=True` and `show_time`/`show_path` toggled by `verbose`
 - [ ] JSON mode attaches `StreamHandler` with `_JSONFormatter`
 - [ ] Verbose sets root logger to `DEBUG`, non-verbose sets `INFO`
 
@@ -109,7 +112,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **`conftest.py`:**
 
-- [ ] `CliResult` helper class exists with `exit_code` and `output` attrs
+- [ ] `CliResult` helper class exists with `exit_code`, `output` (stdout), and `errors` (stderr)
+- [ ] `fixtures_dir` fixture exists for shared test assets
 - [ ] `invoke` fixture exists — wraps `app.meta()` calls with capsys capture and SystemExit handling
 - [ ] Imports `app` from `myapp.cli` (replace `myapp`)
 
@@ -155,7 +159,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] `pytestmark = pytest.mark.e2e` set
 - [ ] `_run()` helper invokes the CLI binary via `subprocess.run` — command name must be app name (not `myapp`)
 - [ ] `test_version_flag` — mandatory: subprocess `--version` exits 0
-- [ ] `test_no_args_shows_help` — mandatory: bare invocation exits 0 with usage output
+- [ ] `test_no_args_shows_help` — mandatory: bare invocation exits 0 with usage output (or app name)
 - [ ] `test_invalid_command` — mandatory: unknown subcommand exits non-zero
 - [ ] `test_hello_command` — demo (replace with actual command tests)
 - [ ] No `myapp` string remnants in subprocess calls or assertions
