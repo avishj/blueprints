@@ -90,6 +90,7 @@ These items are intentionally not templated by Copier (hardcoded defaults). Chan
 
 ## Validate locally
 
+- [ ] `just install` — sync dependencies and install git hooks
 - [ ] `just lint` — all pre-commit hooks pass (ruff fix + format, ty, complexipy, validate-pyproject, reuse, gitleaks, typos, yamllint)
 - [ ] `just test` — all tests pass with coverage report
 - [ ] `just build` — sdist + wheel built, twine check passes, entry point smoke test passes
@@ -101,7 +102,6 @@ These items are intentionally not templated by Copier (hardcoded defaults). Chan
 - [ ] Create GitHub repo (public, default branch `main`)
 - [ ] Enable GitHub Pages (source: GitHub Actions) for docs
 - [ ] Create GitHub environment: `sonarcloud` and add `SONAR_TOKEN` as an environment secret
-- [ ] Add repo secret: `CODECOV_TOKEN` (required for private repos)
 - [ ] Add repo secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`
 - [ ] Create GitHub environment: `pypi` (with trusted publisher configured)
 - [ ] Enable secret scanning with push protection
@@ -122,6 +122,6 @@ uvx copier@9.15.1 update --vcs-ref=<TAG> --trust
 rm -rf /tmp/blueprints
 ```
 
-> Replace `<TAG>` with the desired release tag (e.g. `v1.0.0`). Pinning to a tag ensures you get a known-good snapshot of the template rather than whatever happens to be on `main`.
+> Replace `<TAG>` with the desired release tag (e.g. `v1.0.0`).
 
 Copier uses the `.copier-answers.yml` file in your project root to track which template version was used and what answers were given. Do not delete or manually edit this file.
