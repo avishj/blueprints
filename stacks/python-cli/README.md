@@ -65,7 +65,7 @@ Preconfigured issue and PR templates, auto-labeling, and CODEOWNERS. Includes co
 1. step-security/harden-runner - Runner hardening.
 2. actions/checkout - Repo checkout.
 3. dorny/paths-filter - Job gating by changed paths.
-4. avishj/blueprints/stacks/python-cli/actions/setup - Shared setup (harden runner + checkout + `setup-uv` + `uv sync --frozen`).
+4. avishj/blueprints/stacks/python-cli/actions/setup - Shared setup (harden runner + checkout + install uv/just/bun + optional copier regen).
 5. actions/upload-artifact - Artifact upload.
 6. actions/download-artifact - Artifact download.
 7. actions/deploy-pages - GitHub Pages deployment.

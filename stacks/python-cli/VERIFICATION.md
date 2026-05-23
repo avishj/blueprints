@@ -247,7 +247,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Shared setup action (hosted in Blueprints repo):**
 
-- [ ] All workflow jobs reference `avishj/blueprints/stacks/python-cli/actions/setup@main` (no local `.github/actions/` directory in the project)
+- [ ] All workflow jobs reference a pinned commit of `avishj/blueprints/stacks/python-cli/actions/setup` (currently `@19bdb966ebc356d5b517946bc707c4d9e07f8361`, no local `.github/actions/` directory in the project)
 - [ ] No `.github/actions/` directory exists in the project — the setup action is centralized in the Blueprints repo at `stacks/python-cli/actions/setup/action.yml`
 
 **`ci.yml`:**
