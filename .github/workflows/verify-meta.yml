@@ -36,7 +36,7 @@ jobs:
         if: '!cancelled()'
         uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411  # v2.8.0
         with:
-          args: --exclude-path 'stacks/[^/]+/template' '**/*.md'
+          args: --exclude-path 'stacks/[^/]+/template' --exclude 'conventionalcommits\.org' '**/*.md'
           fail: true
           jobSummary: true
 
