@@ -42,13 +42,13 @@ repos:
         args: [-d, '{extends: default, rules: {line-length: disable, truthy: disable}}']
 
   - repo: https://github.com/crate-ci/typos
-    rev: cf5f1c29a8ac336af8568821ec41919923b05a83  # v1.45.1
+    rev: aca895bf05aec0cb7dffa6f94495e923224d9f17  # v1.46.2
     hooks:
       - id: typos
 
   # --- Commit hygiene ---
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: 2ca29f9297911f8f5a4e8f97100b7832f045e8d3  # v4.13.10
+    rev: 953e1ba4599cc3143122ed5c3e8de3d6dfd5524d  # v4.16.2
     hooks:
       - id: commitizen
 

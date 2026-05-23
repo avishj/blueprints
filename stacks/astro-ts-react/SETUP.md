@@ -9,13 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 ## Prerequisites
 
 - [ ] Bun installed
-- [ ] Copier available (`uvx copier@9.14.3`)
+- [ ] Copier available (`uvx copier@9.15.1`)
 
 ## Scaffold (interactive)
 
 ```bash
 git clone https://github.com/avishj/blueprints /tmp/blueprints
-uvx copier@9.14.3 copy /tmp/blueprints/stacks/astro-ts-react my-project --trust
+uvx copier@9.15.1 copy /tmp/blueprints/stacks/astro-ts-react my-project --trust
 rm -rf /tmp/blueprints
 ```
 
@@ -63,7 +63,7 @@ Branch 2 currently scaffolds:
 
 ```bash
 git clone https://github.com/avishj/blueprints /tmp/blueprints
-uvx copier@9.14.3 copy /tmp/blueprints/stacks/astro-ts-react my-project \
+uvx copier@9.15.1 copy /tmp/blueprints/stacks/astro-ts-react my-project \
   --trust \
   --data project_name=my-app \
   --data owner=avishj \

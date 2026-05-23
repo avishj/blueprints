@@ -21,7 +21,7 @@ jobs:
     permissions: {}
     steps:
       - name: Setup
-        uses: avishj/blueprints/.github/actions/setup@c07f64f83832b1f9e1fe0673b34396c31e34bf7d  # main
+        uses: avishj/blueprints/.github/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361  # main
         with:
           regen: "true"
           regen-stack: ${{ inputs.stack }}
@@ -54,7 +54,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Setup
-        uses: avishj/blueprints/.github/actions/setup@c07f64f83832b1f9e1fe0673b34396c31e34bf7d  # main
+        uses: avishj/blueprints/.github/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361  # main
         with:
           just: "false"
           regen: "true"

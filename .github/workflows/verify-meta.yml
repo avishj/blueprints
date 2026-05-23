@@ -24,13 +24,13 @@ jobs:
     permissions: {}
     steps:
       - name: Setup
-        uses: avishj/blueprints/.github/actions/setup@c07f64f83832b1f9e1fe0673b34396c31e34bf7d  # main
+        uses: avishj/blueprints/.github/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361  # main
         with:
           just: "false"
           bun: "false"
 
       - name: Spell check
-        uses: crate-ci/typos@cf5f1c29a8ac336af8568821ec41919923b05a83  # v1.45.1
+        uses: crate-ci/typos@aca895bf05aec0cb7dffa6f94495e923224d9f17  # v1.46.2
 
       - name: Check links
         if: '!cancelled()'
@@ -43,9 +43,9 @@ jobs:
       - name: Validate schemas
         if: '!cancelled()'
         run: |
-          uvx check-jsonschema@0.37.1 --builtin-schema vendor.renovate renovate.json
-          uvx check-jsonschema@0.37.1 --builtin-schema vendor.github-workflows .github/workflows/*.yml
-          uvx check-jsonschema@0.37.1 --schemafile https://www.schemastore.org/pull-request-labeler.json .github/labeler.yml
+          uvx check-jsonschema@0.37.2 --builtin-schema vendor.renovate renovate.json
+          uvx check-jsonschema@0.37.2 --builtin-schema vendor.github-workflows .github/workflows/*.yml
+          uvx check-jsonschema@0.37.2 --schemafile https://www.schemastore.org/pull-request-labeler.json .github/labeler.yml
 
       - name: YAML lint
         if: '!cancelled()'
@@ -69,7 +69,7 @@ jobs:
 
       - name: Lint Markdown
         if: '!cancelled()'
-        uses: DavidAnson/markdownlint-cli2-action@ce4853d43830c74c1753b39f3cf40f71c2031eb9  # v23.0.0
+        uses: DavidAnson/markdownlint-cli2-action@ded1f9488f68a970bc66ea5619e13e9b52e601cd  # v23.2.0
 
   stack-contract:
     name: Stack Contract (${{ matrix.stack }})
@@ -82,7 +82,7 @@ jobs:
         stack: [astro-ts-react, python-cli]
     steps:
       - name: Setup
-        uses: avishj/blueprints/.github/actions/setup@c07f64f83832b1f9e1fe0673b34396c31e34bf7d  # main
+        uses: avishj/blueprints/.github/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361  # main
         with:
           just: "false"
           regen: "true"

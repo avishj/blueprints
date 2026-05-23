@@ -18,7 +18,7 @@ jobs:
     permissions: {}
     steps:
       - name: Setup
-        uses: avishj/blueprints/.github/actions/setup@c07f64f83832b1f9e1fe0673b34396c31e34bf7d  # main
+        uses: avishj/blueprints/.github/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361  # main
         with:
           fetch-depth: 0
           uv: "false"
@@ -38,19 +38,19 @@ jobs:
       security-events: write  # upload SARIF to Code Scanning
     steps:
       - name: Setup
-        uses: avishj/blueprints/.github/actions/setup@c07f64f83832b1f9e1fe0673b34396c31e34bf7d  # main
+        uses: avishj/blueprints/.github/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361  # main
         with:
           uv: "false"
           just: "false"
           bun: "false"
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@b1d7e1fb5de872772f31590499237e7cce841e8e  # v0.5.3
+        uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d  # v0.5.6
         with:
           persona: pedantic
           online-audits: true
           min-severity: informational
           min-confidence: low
           version: v1.23.1
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           advanced-security: true

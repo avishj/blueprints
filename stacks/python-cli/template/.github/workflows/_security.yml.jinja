@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      security-events: write
+      security-events: write  # upload SARIF results
     container:
       image: semgrep/semgrep@sha256:d7d67e1e0c0ed26278ab35f0be082f0afdfd7a880f4927aee86f8127fdbce617  # v1.159.0
     steps:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Upload SARIF
         if: always()
-        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba  # v4.35.5
         with:
           sarif_file: semgrep.sarif
           category: semgrep
@@ -40,15 +40,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      security-events: write
+      security-events: write  # upload SARIF results
     steps:
       - name: Setup
-        uses: avishj/blueprints/stacks/python-cli/actions/setup@main
+        uses: avishj/blueprints/stacks/python-cli/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361
         with:
           setup-python: "false"
 
       - name: Run Trivy
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1  # v0.35.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25  # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -60,7 +60,7 @@ jobs:
 
       - name: Upload SARIF
         if: always()
-        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba  # v4.35.5
         with:
           sarif_file: trivy.sarif
           category: trivy
@@ -71,7 +71,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Setup
-        uses: avishj/blueprints/stacks/python-cli/actions/setup@main
+        uses: avishj/blueprints/stacks/python-cli/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361
         with:
           setup-python: "false"
           fetch-depth: 0
@@ -79,28 +79,28 @@ jobs:
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7  # v2.3.9
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
   zizmor:
     name: Workflow Security
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      security-events: write
+      security-events: write  # upload SARIF results
     steps:
       - name: Setup
-        uses: avishj/blueprints/stacks/python-cli/actions/setup@main
+        uses: avishj/blueprints/stacks/python-cli/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361
         with:
           setup-python: "false"
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@b1d7e1fb5de872772f31590499237e7cce841e8e  # v0.5.3
+        uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d  # v0.5.6
         with:
           persona: pedantic
           online-audits: true
           min-severity: informational
           min-confidence: low
           version: v1.23.1
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           advanced-security: true
 {% endraw %}

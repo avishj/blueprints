@@ -17,8 +17,8 @@ These files let CI regenerate the template and prove the result still works.
 ## Run locally
 
 ```bash
-uv tool install copier==9.14.3
-uv tool install rust-just==1.50.0
+uv tool install copier==9.15.1
+uv tool install rust-just==1.51.0
 copier copy --defaults --vcs-ref=HEAD \
   --data-file stacks/astro-ts-react/verify/answers.yml \
   stacks/astro-ts-react /tmp/astro-ts-react-out

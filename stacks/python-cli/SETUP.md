@@ -11,7 +11,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] Python 3.13+ installed
 - [ ] [uv](https://docs.astral.sh/uv/getting-started/installation/) installed
 - [ ] [just](https://github.com/casey/just#installation) installed
-- [ ] [pre-commit](https://pre-commit.com/#install) installed
 - [ ] [Docker](https://docs.docker.com/get-docker/) installed (for container builds)
 - [ ] Git configured with signing (for commitizen / sign-off)
 
@@ -21,11 +20,11 @@ Clone the Blueprints repo and run Copier against the `python-cli` stack:
 
 ```bash
 git clone https://github.com/avishj/blueprints /tmp/blueprints
-uvx copier@9.14.3 copy /tmp/blueprints/stacks/python-cli my-project --trust
+uvx copier@9.15.1 copy /tmp/blueprints/stacks/python-cli my-project --trust
 rm -rf /tmp/blueprints
 ```
 
-> **Note:** `--trust` is required because the template runs post-scaffold tasks (`uv sync` and `pre-commit install --install-hooks`). Review the tasks in `copier.yml` before running if concerned.
+> **Note:** `--trust` is required because the template runs post-scaffold tasks (`uv sync` and `uvx --with pre-commit-uv==4.2.1 pre-commit@4.6.0 install --install-hooks`). Review the tasks in `copier.yml` before running if concerned.
 >
 > **Why clone first?** Copier discovers its config at the root of the path you give it. Since `copier.yml` lives at `stacks/python-cli/copier.yml` (not the repo root), remote URLs like `gh:avishj/blueprints` won't work directly. Cloning first and pointing to the subdirectory is the supported approach for multi-stack repos.
 
@@ -50,7 +49,7 @@ Copier will prompt for:
 For non-interactive scaffolding (CI or scripting):
 
 ```bash
-uvx copier@9.14.3 copy /tmp/blueprints/stacks/python-cli my-project \
+uvx copier@9.15.1 copy /tmp/blueprints/stacks/python-cli my-project \
   --trust \
   --data project_name=my-tool \
   --data owner=avishj \
@@ -78,7 +77,12 @@ These items are intentionally not templated by Copier (hardcoded defaults). Chan
 
 **If changing the Python version** (default: 3.13):
 
-- [ ] `pyproject.toml` — `requires-python`, Python version classifiers, `[tool.ruff].target-version`, `[tool.ty].python-version`
+- [ ] `pyproject.toml` — `requires-python` and Python version classifiers
+- [ ] `.pre-commit-config.yaml` — `default_language_version.python`
+- [ ] `.github/workflows/ci.yml` — matrix `python-version` list
+- [ ] `sonar-project.properties` — `sonar.python.version`
+- [ ] `Dockerfile` — base image tag
+- [ ] `.devcontainer/Dockerfile` — base image tag
 
 **Other optional changes:**
 
@@ -86,6 +90,7 @@ These items are intentionally not templated by Copier (hardcoded defaults). Chan
 
 ## Validate locally
 
+- [ ] `just install` — sync dependencies and install git hooks
 - [ ] `just lint` — all pre-commit hooks pass (ruff fix + format, ty, complexipy, validate-pyproject, reuse, gitleaks, typos, yamllint)
 - [ ] `just test` — all tests pass with coverage report
 - [ ] `just build` — sdist + wheel built, twine check passes, entry point smoke test passes
@@ -96,7 +101,7 @@ These items are intentionally not templated by Copier (hardcoded defaults). Chan
 
 - [ ] Create GitHub repo (public, default branch `main`)
 - [ ] Enable GitHub Pages (source: GitHub Actions) for docs
-- [ ] Add repo secret: `SONAR_TOKEN`
+- [ ] Create GitHub environment: `sonarcloud` and add `SONAR_TOKEN` as an environment secret
 - [ ] Add repo secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`
 - [ ] Create GitHub environment: `pypi` (with trusted publisher configured)
 - [ ] Enable secret scanning with push protection
@@ -113,10 +118,10 @@ When the template changes upstream, pull updates into an existing project:
 ```bash
 git clone https://github.com/avishj/blueprints /tmp/blueprints
 cd my-project
-uvx copier@9.14.3 update --vcs-ref=<TAG> --trust
+uvx copier@9.15.1 update --vcs-ref=<TAG> --trust
 rm -rf /tmp/blueprints
 ```
 
-> Replace `<TAG>` with the desired release tag (e.g. `v1.0.0`). Pinning to a tag ensures you get a known-good snapshot of the template rather than whatever happens to be on `main`.
+> Replace `<TAG>` with the desired release tag (e.g. `v1.0.0`).
 
 Copier uses the `.copier-answers.yml` file in your project root to track which template version was used and what answers were given. Do not delete or manually edit this file.

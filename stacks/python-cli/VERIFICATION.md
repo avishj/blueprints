@@ -24,30 +24,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Dev dependencies:**
 
-- [ ] `[dependency-groups]` `dev` contains all 10 template deps (versions may differ, none removed)
+- [ ] `[dependency-groups]` `dev` contains all template deps (commitizen, complexipy, mkdocstrings-python, pytest, pytest-cov, pytest-github-actions-annotate-failures, pytest-mock, pytest-randomly, pytest-timeout, pytest-xdist, ruff, ty, zensical)
 
 **Tooling config — must match template exactly:**
 
-- [ ] `[tool.uv]` section present and unchanged
-- [ ] `[tool.ruff]` — `target-version`, `line-length` 88, `src` includes both `src` and `tests`
-- [ ] `[tool.ruff.lint]` — all 40+ rule groups in `select`, all 6 in `ignore`
-- [ ] `[tool.ruff.lint.per-file-ignores]` — test relaxations (7 rules) present
+- [ ] `[tool.uv]` section present and unchanged (`python-preference = "managed"`)
+- [ ] `[tool.ruff]` includes `src = ["src", "tests"]`
+- [ ] `[tool.ruff.lint]` uses `select = ["ALL"]` and `ignore = ["COM812", "ISC001"]`
+- [ ] `[tool.ruff.lint.per-file-ignores]` includes `tests/**/*.py` relaxations and `tests/e2e/*.py` subprocess exceptions
 - [ ] `[tool.ruff.lint.pydocstyle]` — google convention
-- [ ] `[tool.ruff.lint.mccabe]` — max-complexity 15
-- [ ] `[tool.ty]` — python-version 3.13
-- [ ] `[tool.pytest.ini_options]` — `testpaths`, `pythonpath`, `addopts`, all 3 markers, `filterwarnings`, `xfail_strict`
-- [ ] `[tool.coverage.run]` — `branch`, `parallel`, `relative_files` all true
-- [ ] `[tool.coverage.report]` — `fail_under` 70, all 6 `exclude_lines` patterns
+- [ ] `[tool.pytest.ini_options]` — `addopts`, `filterwarnings`, all 3 markers, `pythonpath`, `testpaths`, `timeout`, `xfail_strict`
+- [ ] `[tool.coverage.run]` — `branch`, `core`, `parallel`, `patch`, `relative_files` match template
+- [ ] `[tool.coverage.report]` — `exclude_also`, `fail_under`, `show_missing`, `skip_empty` match template
 
 **Tooling config — app-name-dependent (no `myapp` remnants):**
 
-- [ ] `tool.ruff.lint.isort.known-first-party` uses app name
-- [ ] `tool.coverage.run.source` uses app name
+- [ ] `tool.ruff.lint.isort.known-first-party` uses the module name
+- [ ] `tool.coverage.run.source` uses the module name
 - [ ] `tool.commitizen.version_files` contains only `pyproject.toml:version` (version is no longer duplicated in `__init__.py`)
 
 **Commitizen:**
 
-- [ ] `[tool.commitizen]` section present — `tag_format`, `changelog_file`, `update_changelog_on_bump` match template
+- [ ] `[tool.commitizen]` section present — `tag_format`, `version`, `version_files`, `update_changelog_on_bump` match template
 
 ### Section 2 — Source Code (`src/myapp/`) (replace `myapp`)
 
@@ -70,6 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] Imports `__version__` from `myapp`, `settings` from `myapp.config`, `ExitCode` from `myapp.exit_codes`, `setup_logging` from `myapp.logging` (replace `myapp`)
 - [ ] Module-level `logger = logging.getLogger(__name__)` defined
 - [ ] `App()` created with `name=`, `help=`, `version=__version__`, `version_flags=["--version", "-V"]`
+- [ ] `app.register_install_completion_command()` called to enable completion install command
 - [ ] `console = Console()` instantiated
 - [ ] `@app.meta.default` function exists — wires `--verbose` flag to `settings.verbose`, calls `setup_logging()`, and calls `app(tokens)`
 - [ ] `entrypoint()` function exists — calls `app.meta()` (this is the `console_scripts` target)
@@ -80,12 +79,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **`config.py`:**
 
-- [ ] `LogFormat` enum defined with `PRETTY` and `JSON` values
+- [ ] `LogFormat` defined as `StrEnum` with `PRETTY` and `JSON` values
 - [ ] `Settings` class extends `BaseSettings` with `SettingsConfigDict`
 - [ ] `env_prefix` set to `<APP>_` (uppercase app name + underscore, not `MYAPP_`)
 - [ ] `env_file` and `env_file_encoding` settings present
 - [ ] `verbose: bool = False` field exists (used by CLI `--verbose` flag)
 - [ ] `log_format: LogFormat = LogFormat.PRETTY` field exists (set via `<APP>_LOG_FORMAT` env var)
+- [ ] Validation errors render a Rich panel and exit with `ExitCode.CONFIG`
 - [ ] Module-level `settings = Settings()` instance exported
 
 **`exit_codes.py`:**
@@ -97,7 +97,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 - [ ] `_JSONFormatter` class defined — formats log records as JSON with `timestamp`, `level`, `logger`, `message` fields
 - [ ] `setup_logging()` function defined with `verbose` and `log_format` params
-- [ ] Pretty mode attaches `RichHandler` with `rich_tracebacks=True`
+- [ ] `setup_logging()` installs rich tracebacks (`show_locals=verbose`) and suppresses cyclopts frames
+- [ ] Pretty mode attaches `RichHandler` with `rich_tracebacks=True` and `show_time`/`show_path` toggled by `verbose`
 - [ ] JSON mode attaches `StreamHandler` with `_JSONFormatter`
 - [ ] Verbose sets root logger to `DEBUG`, non-verbose sets `INFO`
 
@@ -111,7 +112,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **`conftest.py`:**
 
-- [ ] `CliResult` helper class exists with `exit_code` and `output` attrs
+- [ ] `CliResult` helper class exists with `exit_code`, `output` (stdout), and `errors` (stderr)
+- [ ] `fixtures_dir` fixture exists for shared test assets
 - [ ] `invoke` fixture exists — wraps `app.meta()` calls with capsys capture and SystemExit handling
 - [ ] Imports `app` from `myapp.cli` (replace `myapp`)
 
@@ -157,7 +159,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] `pytestmark = pytest.mark.e2e` set
 - [ ] `_run()` helper invokes the CLI binary via `subprocess.run` — command name must be app name (not `myapp`)
 - [ ] `test_version_flag` — mandatory: subprocess `--version` exits 0
-- [ ] `test_no_args_shows_help` — mandatory: bare invocation exits 0 with usage output
+- [ ] `test_no_args_shows_help` — mandatory: bare invocation exits 0 with usage output (or app name)
 - [ ] `test_invalid_command` — mandatory: unknown subcommand exits non-zero
 - [ ] `test_hello_command` — demo (replace with actual command tests)
 - [ ] No `myapp` string remnants in subprocess calls or assertions
@@ -186,7 +188,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] Install commands use app name (uv, pip, docker)
 - [ ] Usage examples updated for actual commands (demo `hello` command replaced)
 - [ ] Development section: clone URL, `cd` dir use correct repo name
-- [ ] Common tasks table matches template (`just lint`, `just test`, `just build`, `just docs`, `just ci`, `just clean`)
+- [ ] Common tasks list matches template (`just install`, `just lint`, `just test`, `just build`, `just docs`, `just ci`, `just clean`)
 - [ ] Configuration section: env var prefix and table use `<APP>_` (not `MYAPP_`), rows updated for actual settings
 - [ ] Documentation link points to correct GitHub Pages URL
 - [ ] License section matches `pyproject.toml` license choice
@@ -221,7 +223,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 **`REUSE.toml`:**
 
 - [ ] `version = 1` present
-- [ ] Covers only uncommentable files: `*.json`, `*.lock`, `src/myapp/py.typed` (replace `myapp` with your actual package name)
+- [ ] Covers only uncommentable files: `*.json`, `*.lock`, `.copier-answers.yml`, `AGENTS.md`, `src/myapp/py.typed` (replace `myapp` with your actual package name)
 - [ ] `SPDX-FileCopyrightText` entries use actual copyright holder (not `Avish J <avish.j@pm.me>`)
 - [ ] `SPDX-License-Identifier` entries match the project license (AGPL-3.0-or-later unless changed)
 - [ ] `LICENSES/**` annotation present with FSF copyright
@@ -247,13 +249,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Shared setup action (hosted in Blueprints repo):**
 
-- [ ] All workflow jobs reference `avishj/blueprints/stacks/python-cli/actions/setup@main` (no local `.github/actions/` directory in the project)
+- [ ] All workflow jobs reference a pinned commit of `avishj/blueprints/stacks/python-cli/actions/setup` (currently `@19bdb966ebc356d5b517946bc707c4d9e07f8361`, no local `.github/actions/` directory in the project)
 - [ ] No `.github/actions/` directory exists in the project — the setup action is centralized in the Blueprints repo at `stacks/python-cli/actions/setup/action.yml`
 
 **`ci.yml`:**
 
 - [ ] All 12 jobs present: `changes`, `checks`, `docker`, `test`, `sonarcloud`, `package`, `complexity`, `security`, `codeql`, `osv-scanner`, `dependency-review`, `ci-passed`
 - [ ] `changes` job and `ci-passed` gate job are present, and `ci.yml` otherwise matches the template including remote setup action usage and current job gating
+- [ ] `sonarcloud` job uses `environment: sonarcloud`
 - [ ] `docker` job — `docker build -t` and `docker run --rm` image name uses app name (not `myapp`)
 - [ ] `package` job — `uv run --with dist/*.whl --no-project --` entry-point verification uses app name (not `myapp`)
 - [ ] All remaining `ci.yml` jobs and behavior match the template exactly
@@ -344,14 +347,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 - [ ] `module` uses app name (not `myapp`)
 - [ ] `env` uses correct `<APP>_VERBOSE` prefix (not `MYAPP_VERBOSE`)
-- [ ] `args` updated for actual CLI commands (demo `["hello", "world"]` replaced)
+- [ ] `args` defaults to `--help` (update for real commands if desired)
 
 **`.devcontainer/Dockerfile` (copy 1:1 from template):**
 
 - [ ] `FROM ghcr.io/astral-sh/uv:...` pinned with `@sha256:` digest
 - [ ] `FROM mcr.microsoft.com/devcontainers/python:3.13` pinned with `@sha256:` digest
 - [ ] `COPY --from=uv /uv /uvx /usr/local/bin/`
-- [ ] `uv tool install rust-just==1.50.0` installs just
+- [ ] `uv tool install rust-just` installs just
 
 **`.devcontainer/devcontainer.json`:**
 
@@ -364,7 +367,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Copy 1:1 from template (no changes needed):**
 
-- [ ] `justfile` — all 6 recipes: `lint`, `test`, `build`, `docs`, `ci`, `clean`
+- [ ] `justfile` — recipes include `install`, `lint`, `test`, `build`, `docs`, `ci`, `clean`
 - [ ] `.pre-commit-config.yaml` — all 10 repos: pre-commit-hooks, ruff, ty (local), yamllint, validate-pyproject, complexipy, commitizen, typos, reuse, gitleaks
 - [ ] `.editorconfig` — indent/charset/line-ending rules for `*`, `*.yml/yaml`, `*.json`, `*.md`, `*.toml`, `*.properties`, `Dockerfile`, `justfile`, `LICENSE`, `LICENSES/**`
 - [ ] `.gitattributes` — line-ending normalization, diff drivers, linguist overrides
@@ -387,6 +390,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Environment setup:**
 
+- [ ] `just install` — runs `uv sync --frozen` and installs git hooks
 - [ ] `uv sync` — venv created, all deps installed
 - [ ] `uv lock` — `uv.lock` generated
 - [ ] `uvx --with pre-commit-uv==4.2.1 pre-commit@4.6.0 install --install-hooks` — pre-commit and commit-msg hooks active and hook environments are prebuilt
@@ -408,7 +412,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "Avish J\|avish.j@pm.me" .` — zero hits if author is different; expected hits if author is Avish J
 - [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "Change This\|change-this" .` — zero hits (settings.yml placeholders replaced)
 - [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "A CLI application" .` — zero hits (template description replaced)
-- [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml '\${' .` — zero hits (all `${...}` placeholders like `SONAR_PROJECT_KEY`, `SONAR_ORG`, `PROJECT_NAME` resolved)
+- [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "{{" .` — zero hits (no Jinja placeholders remain)
 - [ ] `grep -r --exclude=VERIFICATION.md --exclude=.copier-answers.yml "avishj" . | grep -v "avishj/blueprints"` — zero hits if owner is different; hits referencing `avishj/blueprints` (centralized actions) are expected and excluded by this command
 - [ ] `.copier-answers.yml` exists in project root and contains expected answer values
 
@@ -434,13 +438,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Add secrets** (Settings > Secrets and variables > Actions > New repository secret):
 
-- [ ] `CODECOV_TOKEN` — get from [codecov.io](https://codecov.io) after adding the repo
-- [ ] `SONAR_TOKEN` — get from [sonarcloud.io](https://sonarcloud.io) after creating the project
 - [ ] `DOCKERHUB_USERNAME` — Docker Hub username (only if publishing to Docker Hub)
 - [ ] `DOCKERHUB_TOKEN` — Docker Hub access token (only if publishing to Docker Hub)
 
 **Create environment** (Settings > Environments > New environment):
 
+- [ ] Create environment named `sonarcloud` and add `SONAR_TOKEN` as an environment secret
 - [ ] Create environment named `pypi`
 - [ ] In the `pypi` environment, configure [trusted publisher](https://docs.pypi.org/trusted-publishers/) on PyPI: set repository owner, repo name, workflow `release.yml`, and environment `pypi`
 

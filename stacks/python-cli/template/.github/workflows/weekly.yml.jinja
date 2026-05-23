@@ -10,6 +10,10 @@ on:
     - cron: "0 0 * * 0"
   workflow_dispatch:
 
+concurrency:
+  group: weekly-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions: {}
 
 jobs:
@@ -18,12 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      security-events: write
-      id-token: write
-      actions: read
+      security-events: write  # upload SARIF results
+      id-token: write  # publish Scorecard results
+      actions: read  # read workflow metadata
     steps:
       - name: Setup
-        uses: avishj/blueprints/stacks/python-cli/actions/setup@main
+        uses: avishj/blueprints/stacks/python-cli/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361
         with:
           setup-python: "false"
 
@@ -35,7 +39,7 @@ jobs:
           publish_results: true
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba  # v4.35.5
         with:
           sarif_file: scorecard.sarif
           category: scorecard
@@ -53,20 +57,19 @@ jobs:
     with:
       image-ref: ghcr.io/${{ github.repository }}:latest
     permissions:
-      security-events: write
+      security-events: write  # upload SARIF results
 
   security:
     name: Security Scans
     uses: ./.github/workflows/_security.yml
     permissions:
-      security-events: write
-    secrets: inherit
+      security-events: write  # upload SARIF results
 
   codeql:
     name: CodeQL
     uses: ./.github/workflows/_codeql.yml
     permissions:
-      security-events: write
+      security-events: write  # upload SARIF results
 
   osv-scanner:
     name: OSV-Scanner
@@ -74,5 +77,5 @@ jobs:
     with:
       scan-mode: weekly
     permissions:
-      security-events: write
+      security-events: write  # upload SARIF results
 {% endraw %}

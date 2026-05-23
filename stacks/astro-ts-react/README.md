@@ -36,7 +36,7 @@ This stack is a Copier template.
 
 ```bash
 git clone https://github.com/avishj/blueprints /tmp/blueprints
-uvx copier@9.14.3 copy /tmp/blueprints/stacks/astro-ts-react my-project --trust
+uvx copier@9.15.1 copy /tmp/blueprints/stacks/astro-ts-react my-project --trust
 rm -rf /tmp/blueprints
 ```
 

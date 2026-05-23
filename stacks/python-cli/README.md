@@ -16,7 +16,7 @@ This stack is a [Copier](https://copier.readthedocs.io/) template. Scaffold a ne
 
 ```bash
 git clone https://github.com/avishj/blueprints /tmp/blueprints
-uvx copier@9.14.3 copy /tmp/blueprints/stacks/python-cli my-project --trust
+uvx copier@9.15.1 copy /tmp/blueprints/stacks/python-cli my-project --trust
 rm -rf /tmp/blueprints
 ```
 
@@ -65,7 +65,7 @@ Preconfigured issue and PR templates, auto-labeling, and CODEOWNERS. Includes co
 1. step-security/harden-runner - Runner hardening.
 2. actions/checkout - Repo checkout.
 3. dorny/paths-filter - Job gating by changed paths.
-4. avishj/blueprints/stacks/python-cli/actions/setup - Shared setup (harden runner + checkout + `setup-uv` + `uv sync --frozen`).
+4. avishj/blueprints/stacks/python-cli/actions/setup - Shared setup.
 5. actions/upload-artifact - Artifact upload.
 6. actions/download-artifact - Artifact download.
 7. actions/deploy-pages - GitHub Pages deployment.
@@ -114,9 +114,6 @@ stacks/python-cli/
 │   └── setup/
 │       └── action.yml                # Shared CI setup action
 ├── copier.yml                         # Copier config (questions, derived vars, tasks)
-├── actions/
-│   └── setup/
-│       └── action.yml                # Shared CI setup action
 ├── template/
 │   ├── {{ _copier_conf.answers_file }}.jinja  # Copier answers (auto-generated)
 │   ├── .github/

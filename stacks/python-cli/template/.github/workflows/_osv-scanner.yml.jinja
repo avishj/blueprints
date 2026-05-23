@@ -22,10 +22,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      security-events: write
+      security-events: write  # upload SARIF results
     steps:
       - name: Setup
-        uses: avishj/blueprints/stacks/python-cli/actions/setup@main
+        uses: avishj/blueprints/stacks/python-cli/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361
         with:
           fetch-depth: 0
           setup-python: "false"
@@ -35,7 +35,7 @@ jobs:
           git checkout --track "origin/$GITHUB_BASE_REF"
           git submodule update --recursive
       - name: Run scanner on existing code
-        uses: google/osv-scanner-action/osv-scanner-action@c51854704019a247608d928f370c98740469d4b5  # v2.3.5
+        uses: google/osv-scanner-action/osv-scanner-action@9a498708959aeaef5ef730655706c5a1df1edbc2  # v2.3.8
         continue-on-error: true
         with:
           scan-args: |-
@@ -49,7 +49,7 @@ jobs:
           git checkout -f "$GITHUB_SHA"
           git submodule update --recursive
       - name: Run scanner on new code
-        uses: google/osv-scanner-action/osv-scanner-action@c51854704019a247608d928f370c98740469d4b5  # v2.3.5
+        uses: google/osv-scanner-action/osv-scanner-action@9a498708959aeaef5ef730655706c5a1df1edbc2  # v2.3.8
         with:
           scan-args: |-
             --format=json
@@ -58,7 +58,7 @@ jobs:
             ./
         continue-on-error: true
       - name: Run osv-scanner-reporter
-        uses: google/osv-scanner-action/osv-reporter-action@c51854704019a247608d928f370c98740469d4b5  # v2.3.5
+        uses: google/osv-scanner-action/osv-reporter-action@9a498708959aeaef5ef730655706c5a1df1edbc2  # v2.3.8
         with:
           scan-args: |-
             --output=results.sarif
@@ -90,14 +90,18 @@ jobs:
       - name: Upload to code-scanning
         id: upload_artifact
         if: ${{ !cancelled() }}
-        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba  # v4.35.5
         with:
           sarif_file: results.sarif
       - name: Print Code Scanning PR URL
         if: ${{ !cancelled() }}
+        env:
+          SERVER_URL: ${{ github.server_url }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           echo "View the OSV-Scanner results for this PR in the 'Security' tab, using the following link:"
-          echo "${{ github.server_url }}/${{ github.repository }}/security/code-scanning?query=pr%3A${{ github.event.pull_request.number }}"
+          echo "${SERVER_URL}/${REPOSITORY}/security/code-scanning?query=pr%3A${PR_NUMBER}"
       - name: Error troubleshooter
         if: ${{ always() && steps.upload_artifact.outcome == 'failure' }}
         run: |
@@ -110,14 +114,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      security-events: write
+      security-events: write  # upload SARIF results
     steps:
       - name: Setup
-        uses: avishj/blueprints/stacks/python-cli/actions/setup@main
+        uses: avishj/blueprints/stacks/python-cli/actions/setup@19bdb966ebc356d5b517946bc707c4d9e07f8361
         with:
           setup-python: "false"
       - name: Run scanner
-        uses: google/osv-scanner-action/osv-scanner-action@c51854704019a247608d928f370c98740469d4b5  # v2.3.5
+        uses: google/osv-scanner-action/osv-scanner-action@9a498708959aeaef5ef730655706c5a1df1edbc2  # v2.3.8
         with:
           scan-args: |-
             --output=results.json
@@ -126,7 +130,7 @@ jobs:
             ./
         continue-on-error: true
       - name: Run osv-scanner-reporter
-        uses: google/osv-scanner-action/osv-reporter-action@c51854704019a247608d928f370c98740469d4b5  # v2.3.5
+        uses: google/osv-scanner-action/osv-reporter-action@9a498708959aeaef5ef730655706c5a1df1edbc2  # v2.3.8
         with:
           scan-args: |-
             --output=results.sarif
@@ -143,16 +147,18 @@ jobs:
           retention-days: 90
       - name: Upload to code-scanning
         if: ${{ !cancelled() }}
-        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba  # v4.35.5
         with:
           sarif_file: results.sarif
       - name: Print Code Scanning URL
         if: ${{ !cancelled() }}
+        env:
+          SERVER_URL: ${{ github.server_url }}
+          REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
         run: |
           echo "View the OSV-Scanner results in the 'Security' tab, using the following link:"
-          echo "${{ github.server_url }}/${{ github.repository }}/security/code-scanning?query=is%3Aopen+branch%3A${GITHUB_REF_NAME}+tool%3Aosv-scanner"
-        env:
-          GITHUB_REF_NAME: ${{ github.ref_name }}
+          echo "${SERVER_URL}/${REPOSITORY}/security/code-scanning?query=is%3Aopen+branch%3A${GITHUB_REF_NAME}+tool%3Aosv-scanner"
       - name: Error troubleshooter
         if: ${{ always() && steps.upload_artifact.outcome == 'failure' }}
         run: |
