@@ -11,7 +11,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 - [ ] Python 3.13+ installed
 - [ ] [uv](https://docs.astral.sh/uv/getting-started/installation/) installed
 - [ ] [just](https://github.com/casey/just#installation) installed
-- [ ] [pre-commit](https://pre-commit.com/#install) installed
 - [ ] [Docker](https://docs.docker.com/get-docker/) installed (for container builds)
 - [ ] Git configured with signing (for commitizen / sign-off)
 
@@ -78,7 +77,12 @@ These items are intentionally not templated by Copier (hardcoded defaults). Chan
 
 **If changing the Python version** (default: 3.13):
 
-- [ ] `pyproject.toml` — `requires-python`, Python version classifiers, `[tool.ruff].target-version`, `[tool.ty].python-version`
+- [ ] `pyproject.toml` — `requires-python` and Python version classifiers
+- [ ] `.pre-commit-config.yaml` — `default_language_version.python`
+- [ ] `.github/workflows/ci.yml` — matrix `python-version` list
+- [ ] `sonar-project.properties` — `sonar.python.version`
+- [ ] `Dockerfile` — base image tag
+- [ ] `.devcontainer/Dockerfile` — base image tag
 
 **Other optional changes:**
 

@@ -24,30 +24,28 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 **Dev dependencies:**
 
-- [ ] `[dependency-groups]` `dev` contains all 10 template deps (versions may differ, none removed)
+- [ ] `[dependency-groups]` `dev` contains all template deps (commitizen, complexipy, mkdocstrings-python, pytest, pytest-cov, pytest-github-actions-annotate-failures, pytest-mock, pytest-randomly, pytest-timeout, pytest-xdist, ruff, ty, zensical)
 
 **Tooling config — must match template exactly:**
 
-- [ ] `[tool.uv]` section present and unchanged
-- [ ] `[tool.ruff]` — `target-version`, `line-length` 88, `src` includes both `src` and `tests`
-- [ ] `[tool.ruff.lint]` — all 40+ rule groups in `select`, all 6 in `ignore`
-- [ ] `[tool.ruff.lint.per-file-ignores]` — test relaxations (7 rules) present
+- [ ] `[tool.uv]` section present and unchanged (`python-preference = "managed"`)
+- [ ] `[tool.ruff]` includes `src = ["src", "tests"]`
+- [ ] `[tool.ruff.lint]` uses `select = ["ALL"]` and `ignore = ["COM812", "ISC001"]`
+- [ ] `[tool.ruff.lint.per-file-ignores]` includes `tests/**/*.py` relaxations and `tests/e2e/*.py` subprocess exceptions
 - [ ] `[tool.ruff.lint.pydocstyle]` — google convention
-- [ ] `[tool.ruff.lint.mccabe]` — max-complexity 15
-- [ ] `[tool.ty]` — python-version 3.13
-- [ ] `[tool.pytest.ini_options]` — `testpaths`, `pythonpath`, `addopts`, all 3 markers, `filterwarnings`, `xfail_strict`
-- [ ] `[tool.coverage.run]` — `branch`, `parallel`, `relative_files` all true
-- [ ] `[tool.coverage.report]` — `fail_under` 70, all 6 `exclude_lines` patterns
+- [ ] `[tool.pytest.ini_options]` — `addopts`, `filterwarnings`, all 3 markers, `pythonpath`, `testpaths`, `timeout`, `xfail_strict`
+- [ ] `[tool.coverage.run]` — `branch`, `core`, `parallel`, `patch`, `relative_files` match template
+- [ ] `[tool.coverage.report]` — `exclude_also`, `fail_under`, `show_missing`, `skip_empty` match template
 
 **Tooling config — app-name-dependent (no `myapp` remnants):**
 
-- [ ] `tool.ruff.lint.isort.known-first-party` uses app name
-- [ ] `tool.coverage.run.source` uses app name
+- [ ] `tool.ruff.lint.isort.known-first-party` uses the module name
+- [ ] `tool.coverage.run.source` uses the module name
 - [ ] `tool.commitizen.version_files` contains only `pyproject.toml:version` (version is no longer duplicated in `__init__.py`)
 
 **Commitizen:**
 
-- [ ] `[tool.commitizen]` section present — `tag_format`, `changelog_file`, `update_changelog_on_bump` match template
+- [ ] `[tool.commitizen]` section present — `tag_format`, `version`, `version_files`, `update_changelog_on_bump` match template
 
 ### Section 2 — Source Code (`src/myapp/`) (replace `myapp`)
 
